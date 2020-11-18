@@ -73,11 +73,11 @@ render('header', ['title' => 'Ajouter un Rendez-vous']);
             <button class="btn btn-primary" name="envoi">Rechercher le client</button>
         </div>
     </form>
-<!-- Si je ne suis pas en POST je propose d'ajouter un nouveau client -->
+    <!-- Si je ne suis pas en POST je propose d'ajouter un nouveau client -->
     <?php if (empty($_POST)) : ?>
         <a href="addClient.php?nomClient=&prenomClient=&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="add__button">+ Ajouter un nouveau Client</a>
     <?php endif; ?>
-<!-- Si je ne trouve pas de resultat je propose de créer le client en récupérant le nom et prenom inscrit pour faciliter la completion du formulaire d'ajout  Sinon si je suis bien en POST, et que mon tableau $result2 n'est pas vide, je propose d'abord de créer un client, puis j'affiche les données contenue dans mon tableau $result2, je propose de l'utiliser pour ajouter un Rendez-vous ou pour la création d'un nouveau Chien -->
+    <!-- Si je ne trouve pas de resultat je propose de créer le client en récupérant le nom et prenom inscrit pour faciliter la completion du formulaire d'ajout  Sinon si je suis bien en POST, et que mon tableau $result2 n'est pas vide, je propose d'abord de créer un client, puis j'affiche les données contenue dans mon tableau $result2, je propose de l'utiliser pour ajouter un Rendez-vous ou pour la création d'un nouveau Chien -->
     <?php if (isset($result) && $result === 0) : ?>
         Ce client n'existe pas, Voulez vous le créer ? <br>
 
@@ -89,28 +89,30 @@ render('header', ['title' => 'Ajouter un Rendez-vous']);
             <?php if (!empty($result2)) : ?>
                 <a href="addClient.php?nomClient=<?= $data['nomClient']; ?>&prenomClient=<?= $data['prenomClient'] ? $data['prenomClient'] : ''; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="add__button">+ Ajouter un nouveau Client</a>
                 <br><br>
-                <h4>Client trouvé :</h4><br>
+                <?php $result === 1  ? 'Client trouvé' : 'Clients trouvés' ?> </h4>
+            <?php endif; ?>
+            <?php if (!empty($result2)) : ?>
+                <?php foreach ($result2 as $result2) : ?>
+
+
+                    <?php if (isset($result2)) : ?>
+                        <h4><?= h($result2['nom']) . ' ' . h($result2['prenom']); ?></h4>
+                        <?= h($result2['adresse']) ?><br>
+                        <?= h($result2['tel']) ?><br>
+                        <?= h($result2['mail']); ?><br>
+
+                        Souhaitez-vous utiliser ce client pour un Rendez-vous ?
+                        <a href="add.php?nomClient=<?= $result2['nom']; ?>&prenomClient=<?= $result2['prenom']; ?>&idClient=<?= $result2['id']; ?>&nomClient=<?= $result2['nom']; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="btn btn-outline-secondary">Oui</a>
+
+                        <br>
+
+                        Souhaitez-vous continuer vers la création d'une nouvelle fiche Chien ?
+                        <a href="addChien.php?idClient=<?= $result2['id']; ?>&nomClient=<?= $result2['nom']; ?>&prenomClient=<?= $result2['prenom']; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="btn btn-outline-secondary">Oui</a>
+                        <hr>
+                    <?php endif; ?>
+                <?php endforeach; ?>
             <?php endif; ?>
 
-            <?php foreach ($result2 as $result2) : ?>
-
-
-                <?php if (isset($result2)) : ?>
-                    <h4><?= h($result2['nom']) . ' ' . h($result2['prenom']); ?></h4>
-                    <?= h($result2['adresse']) ?><br>
-                    <?= h($result2['tel']) ?><br>
-                    <?= h($result2['mail']); ?><br>
-
-                    Souhaitez-vous utiliser ce client pour un Rendez-vous ?
-                    <a href="add.php?nomClient=<?= $result2['nom']; ?>&prenomClient=<?= $result2['prenom']; ?>&idClient=<?= $result2['id']; ?>&nomClient=<?= $result2['nom']; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="btn btn-outline-secondary">Oui</a>
-
-                    <br>
-
-                    Souhaitez-vous continuer vers la création d'une nouvelle fiche Chien ?
-                    <a href="addChien.php?idClient=<?= $result2['id']; ?>&nomClient=<?= $result2['nom']; ?>&prenomClient=<?= $result2['prenom']; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="btn btn-outline-secondary">Oui</a>
-                    <hr>
-                <?php endif; ?>
-            <?php endforeach; ?>
             <!-- Je propose une fois de plus d'ajouter un nouveau client, afin de ne pas avoir a remonter en haut de page -->
             <a href="addClient.php?nomClient=<?= $data['nomClient']; ?>&prenomClient=<?= $data['prenomClient'] ? $data['prenomClient'] : ''; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="add__button">+ Ajouter un nouveau Client</a>
             <br><br>

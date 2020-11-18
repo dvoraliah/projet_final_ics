@@ -176,9 +176,10 @@ class Events {
      *
      * @param Event $event
      * @param array $data
-     * @return void
+     * @return mixed
      */
-    public function hydrateClientChien(Event $event, array $data)
+    
+    public function hydrateClientChien(Event $event, array $data) : Event
     {
         $event->setName($data['nomClient']);
         $event->setPrenom($data['prenomClient']);
@@ -370,9 +371,9 @@ class Events {
      *
      * @param string $nomChien
      * @param string $id_Client
-     * @return array
+     * @return array|bool
      */
-    public function findIdChien(string $nomChien, string $id_Client) : array
+    public function findIdChien(string $nomChien, string $id_Client) 
     {
         
         $statement = $this->pdo->prepare('SELECT id FROM chien WHERE nom=? AND id_client= ?');

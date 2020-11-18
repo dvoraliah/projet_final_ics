@@ -61,14 +61,14 @@ class Month {
         {
             $endWeek = intval($end->modify('-7 days')->format('W') + 1);
         }
-       
+        
         if($startWeek === 53)
         {
             $end = $start->modify('+1 month'); 
         }
 
         $weeks = intval($endWeek- $startWeek) + 1;
- 
+
         if ($weeks < 0){
             $weeks = intval($end->format('W'));
         }

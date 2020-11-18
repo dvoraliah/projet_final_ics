@@ -89,7 +89,8 @@ render('header', ['title' => 'Ajouter un Rendez-vous']);
             <?php if (!empty($result2)) : ?>
                 <a href="addClient.php?nomClient=<?= $data['nomClient']; ?>&prenomClient=<?= $data['prenomClient'] ? $data['prenomClient'] : ''; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="add__button">+ Ajouter un nouveau Client</a>
                 <br><br>
-                <?php $result === 1  ? 'Client trouvé' : 'Clients trouvés' ?> </h4>
+                <h4><?= ($result === 1) ? 'Client trouvé' : 'Clients trouvés'; ?> </h4>
+
             <?php endif; ?>
             <?php if (!empty($result2)) : ?>
                 <?php foreach ($result2 as $result2) : ?>

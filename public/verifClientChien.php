@@ -1,13 +1,13 @@
+<!-- Formulaire de recherche d'un client en bdd -->
 <?php
 require_once '../src/bootstrap.php';
-require_once '../src/Date/EventValidator.php';
-require_once '../src/App/Validator.php';
-// require_once '../src/Date/Event.php';
-// require_once '../src/Date/Events.php';
-
-// $validator = new \App\Validator($data);
+// J'instancie un tableau d'erreur vide, et je récupère les données contenues dans mon GET dans un tableau $dataAdd
 $errors = [];
 $dataAdd = $_GET;
+
+//Si je suis en POST je recupere les données de mon post dans un tableau $data, si il y a dans mon get les index dates, start et end je les stocke dans les variables $dates, $start et $end
+//Je verifie les données de mon post grâce à mon objet $validator et à ma fonction validatesChienClient
+//Si mon tableau d'erreur est vide, je crée un objet Event pour acceder à ma bdd, je modifie les données contenues de mon objet event pour qu'elles soient les meme que mon POST, je recherche l'id de mon client, et je regarde combien de lignes sont trouvées. Je crée une variable idClient pour y stocker l'id trouvé.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = $_POST;
 
@@ -22,30 +22,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $validator = new EventValidator();
     $errors = $validator->validatesChienClient($_POST);
-    // dd($data);
-    // dd($errors);
-    // dd($_POST['nomClient']);
+
     if (empty($errors)) {
         $events = new Events(get_pdo());
-        $test = new Event();
+        // $test = new Event();
         $event = $events->hydrateClientChien(new Event(), $data);
-
         $result2 = $events->searchIdClient($event->getName(), $event->getPrenom());
-        // var_dump($result2);
         $result = $events->search($event);
-        // $result2 = $events->searchIdClient($event->getName(), $event->getPrenom());
         if (isset($result2['id'])) {
             $idClient = $result2['id'];
         }
-        // dd($data);
-
     }
 }
-// var_dump($result2); 
 render('header', ['title' => 'Ajouter un Rendez-vous']);
-// var_dump($result2);
 
 ?>
+<!-- Formulaire de recherche -->
 <div class="container">
 
     <?php if (!empty($errors)) : ?>
@@ -81,17 +73,15 @@ render('header', ['title' => 'Ajouter un Rendez-vous']);
             <button class="btn btn-primary" name="envoi">Rechercher le client</button>
         </div>
     </form>
-    <?php dd($dataAdd) ?>
-
+<!-- Si je ne suis pas en POST je propose d'ajouter un nouveau client -->
     <?php if (empty($_POST)) : ?>
         <a href="addClient.php?nomClient=&prenomClient=&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="add__button">+ Ajouter un nouveau Client</a>
     <?php endif; ?>
-
+<!-- Si je ne trouve pas de resultat je propose de créer le client en récupérant le nom et prenom inscrit pour faciliter la completion du formulaire d'ajout  Sinon si je suis bien en POST, et que mon tableau $result2 n'est pas vide, je propose d'abord de créer un client, puis j'affiche les données contenue dans mon tableau $result2, je propose de l'utiliser pour ajouter un Rendez-vous ou pour la création d'un nouveau Chien -->
     <?php if (isset($result) && $result === 0) : ?>
         Ce client n'existe pas, Voulez vous le créer ? <br>
 
         <a href="addClient.php?nomClient=<?= $data['nomClient']; ?>&prenomClient=<?= $data['prenomClient'] ? $data['prenomClient'] : ''; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="add__button">+ Ajouter un nouveau Client</a>
-
 
         <?php else :
 
@@ -118,10 +108,10 @@ render('header', ['title' => 'Ajouter un Rendez-vous']);
 
                     Souhaitez-vous continuer vers la création d'une nouvelle fiche Chien ?
                     <a href="addChien.php?idClient=<?= $result2['id']; ?>&nomClient=<?= $result2['nom']; ?>&prenomClient=<?= $result2['prenom']; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="btn btn-outline-secondary">Oui</a>
-                    <a href="verifClientChien.php" class="btn btn-outline-secondary">Non, chercher à nouveau</a>
                     <hr>
                 <?php endif; ?>
             <?php endforeach; ?>
+            <!-- Je propose une fois de plus d'ajouter un nouveau client, afin de ne pas avoir a remonter en haut de page -->
             <a href="addClient.php?nomClient=<?= $data['nomClient']; ?>&prenomClient=<?= $data['prenomClient'] ? $data['prenomClient'] : ''; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>" class="add__button">+ Ajouter un nouveau Client</a>
             <br><br>
 

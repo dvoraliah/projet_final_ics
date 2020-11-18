@@ -1,10 +1,8 @@
 <?php
-
-// use App\Date\Events;
+/*
 
 
 require '../src/bootstrap.php';
-require '../src/Date/Events.php';
 
 $pdo = get_pdo();
 $events = new Events($pdo);
@@ -53,4 +51,5 @@ render('header', ['title' => $event['name']]);
 
 
 require '../views/footer.php';
+*/
 ?>

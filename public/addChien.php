@@ -14,7 +14,7 @@ $start = $_GET['start'];
 $end = $_GET['end'];
 
 //Si la methode POST est enregistrée dans ma variable $_SERVER, je crée un tableau $data3 avec les données de mon POST. Je me sers de ma variable $idClient pour l'ajouter en tant qu'index 'id' dans mon tableau $data3, cela me sert à remplir mon champs id_client en bdd, afin d'associer mes chiens et clients par la suite. Je crée une objet EventValidator pour vérifier que les données de mon POST sont correctes, si ce n'est pas le cas, il retournera un tableau d'erreurs.
-//Si mon tableau d'erreur est vide je modifie mes données pour qu'elles correspondent à mon POST et j'envois mes données en bdd
+//Si mon tableau d'erreur est vide je modifie mes données pour qu'elles correspondent à mon POST et j'envois mes données en bdd et je vide mon tableau $data3 afin d'eviter les doublons en cliquant accidentellement à nouveau sur le bouton ajouter 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data3 = $_POST;
     $data3['id'] = $idClient;
@@ -24,7 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $events = new Events(get_pdo());
         $event = $events->hydrateChien(new Event(), $data3);
-        $events->createChien($event);
+        $creation = $events->createChien($event);
+        $data3 = [];
     }
 }
 render('header', ['title' => 'Ajouter un Rendez-vous']);
@@ -32,7 +33,17 @@ render('header', ['title' => 'Ajouter un Rendez-vous']);
 ?>
 
 <!-- Formulaire d'ajout de chien, avec persistance des données récupérées dans mon $data3 -->
+<?php if (isset($creation)) : ?>
+    <?php if ($creation === true) : ?>
+        <div class="container">
+            <div class="alert alert-success">
+                Chien ajouté au client <?= $nomClient ?> <?= $prenomClient ?> avec succès.
+            </div>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
 <div class="container">
+
     <h1>Ajouter un Chien</h1>
 
     <form action="" method="post" class="form">
@@ -82,10 +93,10 @@ render('header', ['title' => 'Ajouter un Rendez-vous']);
 
         <!-- Si la variable $events a été créee, et que l'objet events renvoie true après la fonction create, j'affiche un lien permettant de retourner vers l'ajout de rendez-vous en gardant mes données utiles dans ma barre d'adresse, sinon je peux créer un nouveau chien-->
 
-            <?php if (isset($events) AND $events->createChien($event) === true) : ?>
-                <fieldset>Chien ajouté avec succès, vous pouvez ajouter un nouveau chien ou <a href="add.php?nomClient=<?= $_GET['nomClient']; ?>&idClient=<?= $idClient; ?>&prenomClient=<?= $prenomClient; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>">retourner à l'ajout de rendez-vous ?</a> </fieldset>
+        <?php if (isset($events) and $creation === true) : ?>
+            <fieldset>Chien ajouté avec succès, vous pouvez ajouter un nouveau chien ou <a href="add.php?nomClient=<?= $_GET['nomClient']; ?>&idClient=<?= $idClient; ?>&prenomClient=<?= $prenomClient; ?>&dates=<?= $dataAdd['dates']; ?>&start=<?= $dataAdd['start']; ?>&end=<?= $dataAdd['end']; ?>">retourner à l'ajout de rendez-vous ?</a> </fieldset>
 
-            <?php endif; ?>
+        <?php endif; ?>
 
     </form>
 </div>

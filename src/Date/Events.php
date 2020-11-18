@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Regroupe mes fonctions permettant les modifications d'attributs d'Event et les interactions avec ma bdd
+ * 
+ */
 class Events {
 
     private $pdo;
@@ -49,6 +53,7 @@ class Events {
 
         return $days;
     }
+
     /**
      * Recupere un evenement
      *
@@ -66,7 +71,13 @@ class Events {
         return $result;
     }
 
-    public function findNomChien(int $idChien)
+    /**
+     * Recupere le nom d'un chien à partir de son id
+     *
+     * @param integer $idChien
+     * @return array
+     */
+    public function findNomChien(int $idChien) : array
     {
         $result = $this->pdo->prepare("SELECT nom FROM chien WHERE id = ?");
         $result->execute([
@@ -76,7 +87,13 @@ class Events {
         
     }
 
-    public function findNomClient(int $idClient)
+    /**
+     * Recupere le nom d'un client à partir de son id
+     *
+     * @param integer $idClient
+     * @return array
+     */
+    public function findNomClient(int $idClient) : array
     {
         $result = $this->pdo->prepare("SELECT nom FROM clients WHERE id = ?");
         $result->execute([
@@ -85,6 +102,12 @@ class Events {
         return $result->fetch();
     }
 
+    /**
+     * Recupere toutes données contenues dans la table chien avec l'id du client
+     *
+     * @param integer $id
+     * @return array
+     */
     public function findChien(int $id): array
     {
         $result = $this->pdo->query("SELECT * FROM chien WHERE id_Client = $id");
@@ -113,6 +136,14 @@ class Events {
         return $event;
     }
 
+
+    /**
+     * Modifie les elements pour la modification en bdd d'un rdv
+     *
+     * @param Event $event
+     * @param array $data
+     * @return void
+     */
     public function hydrateEdit(Event $event, array $data)
     {
         $event->setDescription($data['description']);
@@ -122,6 +153,13 @@ class Events {
         return $event;
     }
 
+    /**
+     * Modifie les elements pour la rentrée en bdd d'un nouveau client
+     *
+     * @param Event $event
+     * @param array $data
+     * @return void
+     */
     public function hydrateClient(Event $event, array $data)
     {
         $event->setName($data['nom']);
@@ -133,14 +171,27 @@ class Events {
         return $event;
     }
 
+    /**
+     * Modifie les elements pour la recherche en bdd d'un client d'après son nom et son prenom
+     *
+     * @param Event $event
+     * @param array $data
+     * @return void
+     */
     public function hydrateClientChien(Event $event, array $data)
     {
         $event->setName($data['nomClient']);
         $event->setPrenom($data['prenomClient']);
         return $event;
-        // $event->setId($id);
     }
 
+    /**
+     * Modifie les elements pour la rentrée en bdd d'un nouveau chien
+     *
+     * @param Event $event
+     * @param array $data
+     * @return void
+     */
     public function hydrateChien(Event $event, array $data)
     {
         $event->setName($data['nomChien']);
@@ -152,7 +203,7 @@ class Events {
     }
 
     /**
-     * Crée un nouveau rendez-vous en bdd
+     * Crée un nouveau rendez-vous en bdd dans rendez_vous
      *
      * @param Event $event
      * @return boolean
@@ -169,6 +220,12 @@ class Events {
         ]);
     }
 
+    /**
+     * Crée un nouveau client en bdd dans clients
+     *
+     * @param Event $event
+     * @return boolean
+     */
     public function createClient(Event $event): bool
     {
         $statement = $this->pdo->prepare('INSERT INTO clients (nom, prenom, adresse, tel, mail) VALUES (?, ?, ?, ?, ?)');
@@ -181,6 +238,12 @@ class Events {
         ]);
     }
 
+    /**
+     * Crée un nouveau chien en bdd dans chien
+     *
+     * @param Event $event
+     * @return boolean
+     */
     public function createChien(Event $event): bool
     {
         $statement = $this->pdo->prepare('INSERT INTO chien (nom, age, race, description, id_client) VALUES (?, ?, ?, ?, ?)');
@@ -193,7 +256,7 @@ class Events {
         ]);
     }
     /**
-     * Mets à jour un rendez en bdd
+     * Mets à jour un rendez en bdd dans rendez_vous
      *
      * @param Event $event
      * @return boolean
@@ -209,7 +272,7 @@ class Events {
         ]);
     }
 /**
- * Supprime le rendezvous de la bdd
+ * Supprime le rendezvous de la bdd dans rendez_vous
  *
  * @param Event $event
  * @return boolean
@@ -222,7 +285,13 @@ class Events {
         ]);
     }
 
-    public function search(Event $event)
+    /**
+     * retourne le nom de ligne qui correspondent à la recherche d'un client dans clients
+     *
+     * @param Event $event
+     * @return integer
+     */
+    public function search(Event $event) : int
     {
         if(!empty($event->getPrenom())){
             $statement = $this->pdo->prepare('SELECT * FROM clients WHERE nom LIKE ? AND prenom LIKE ?');
@@ -242,7 +311,14 @@ class Events {
         return $statement->rowCount();
     }
 
-    public function searchIdClient($name, $firstName)
+    /**
+     * Retourne les clients trouvés avec nom et prenom ou seulement le nom dans clients
+     *
+     * @param string $name
+     * @param string $firstName
+     * @return array
+     */
+    public function searchIdClient(string $name, string $firstName) : array
     {
         if (!empty($firstName)) {
             $statement = $this->pdo->prepare("SELECT * FROM clients WHERE nom LIKE :nom AND prenom LIKE :prenom ORDER BY nom ASC, prenom ASC");
@@ -257,7 +333,14 @@ class Events {
         return $statement->fetchAll();
     } 
 
-    public function findIdClient($name, $firstName)
+    /**
+     * Recherche le client d'après leur nom et prénom dans clients
+     *
+     * @param string $name
+     * @param string $firstName
+     * @return array
+     */
+    public function findIdClient(string $name, string $firstName) : array
     {
         $statement = $this->pdo->prepare("SELECT * FROM clients WHERE nom = ? AND prenom = ?");
         $statement->execute([
@@ -267,6 +350,12 @@ class Events {
         return $statement->fetch();
     }
 
+    /**
+     * recherche les données d'un chien d'après l'id du Client dans chien
+     *
+     * @param Event $event
+     * @return integer
+     */
     public function searchChien(Event $event) : int
     {
         $statement = $this->pdo->prepare('SELECT * FROM chien WHERE id_Client= ?');
@@ -276,7 +365,15 @@ class Events {
         return $statement->rowCount();
     }
 
-    public function findIdChien($nomChien, $id_Client){
+    /**
+     * recherche l'id d'un chien d'après son nom et son id_client dans chien
+     *
+     * @param string $nomChien
+     * @param string $id_Client
+     * @return array
+     */
+    public function findIdChien(string $nomChien, string $id_Client) : array
+    {
         
         $statement = $this->pdo->prepare('SELECT id FROM chien WHERE nom=? AND id_client= ?');
         $statement->execute([
@@ -287,7 +384,13 @@ class Events {
 
     }
 
-    public function showChien(Event $event)
+    /**
+     * recherche toutes les données d'un chien d'après son id_client dans chien
+     *
+     * @param Event $event
+     * @return integer
+     */
+    public function showChien(Event $event) : int
     {
         $statement = $this->pdo->prepare('SELECT * FROM chien WHERE id_Client= ?');
         return $statement->execute([
@@ -296,7 +399,13 @@ class Events {
         
     }
 
-    public function showNameChien($idChien)
+    /**
+     * Recherche toutes les données d'un chien d'après son id dans chien
+     *
+     * @param integer $idChien
+     * @return array
+     */
+    public function showNameChien(int $idChien) : array
     {
         $statement = $this->pdo->prepare('SELECT * FROM chien WHERE id= ?');
         $statement->execute([
@@ -305,8 +414,13 @@ class Events {
         return $statement->fetch();
     }
 
-
-    public function findRaceChien($idChien)
+    /**
+     * recherche la race d'un chien d'après son id dans chien
+     *
+     * @param integer $idChien
+     * @return array
+     */
+    public function findRaceChien(int $idChien) : array
     {
         $statement = $this->pdo->prepare('SELECT race FROM chien WHERE id= ?');
         $statement->execute([

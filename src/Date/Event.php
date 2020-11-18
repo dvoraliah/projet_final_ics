@@ -1,7 +1,7 @@
 <?php
-// namespace Date;
+
 /**
- * Prout
+ * Getter et Setter correspond aux attributs et similaire à mes databases
  */
 class Event {
     

@@ -10,7 +10,6 @@ $events = new Events($pdo);
 
 $month = new Month($_GET['month'] ?? null, $_GET['year'] ?? null);
 $start = $month->getFisrtDay();
-dd($start->format('N'));
 $start = $start->format('N') === '1' ? $start : $month->getFisrtDay()->modify('last monday');
 $weeks = $month->getWeeks();
 $end = $start->modify('+' . (6 + 7 * ($weeks - 1)) . 'days');

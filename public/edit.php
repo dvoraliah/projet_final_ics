@@ -26,7 +26,7 @@ $raceChien = $events->findRaceChien($event['id_chien']);
 
 render('header', ['title' => $nomChien['nom'] . ' ' . $nomClient['nom'] . ' ' . $event['start']]);
 
-//Je remplis mon tableau $data avec les éléments de mon event
+//Je remplis mon tableau $data avec les éléments de mon eventn je les utiliserai pour préremplir mon formulaire
 
 $data = [
     'id' => $event['id'],
@@ -56,7 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 ?>
-
+<!-- Formulaire D'edition -->
+<!-- Les nom du client, nom du chien, race du chien, ne sont pas modifiable -->
 <div class="container">
     <h1> Editer l'évènement Rendez-vous : <small><?= h($data['nomChien']); ?></small></h1>
     <form action="" method="post" class="form">
@@ -123,6 +124,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button class="btn btn-primary ">Modifier</button>
     </form>
     <br>
+
+    <!-- Formulaire qui permet la suppression, renvoit vers la page delete.php -->
     <form action="delete.php?id=<?= $event['id'] ?>" method="post">
         <button class="btn btn-danger">Supprimer</button>
     </form>

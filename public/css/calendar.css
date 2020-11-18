@@ -1,0 +1,103 @@
+.calendar{
+    position: relative;
+}
+
+.bg-primary {
+    background-color: #e7427c!important;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #e7427c;
+    border-color: #e7427c;
+}
+
+.calendar__table{
+    width: 100%;
+    height : calc(100vh - 128px);
+}
+
+.calendar__table td {
+    padding : 10px;
+    border : 1px solid #ccc;
+    vertical-align : top;
+    width : 14.28px;
+}
+
+.calendar__table--6weeks td {
+    height: 16.66px;
+}
+
+.calendar__weekday {
+    font-weight: bold;
+    color : black;
+}
+
+.calendar__day{
+    font-size: 1.3em;
+}
+
+.calendar__othermonth .calendar__day{
+    opacity: 0.3;
+}
+
+.calendar__button{
+    display: block;
+    width: 55px;
+    height: 55px;
+    line-height: 55px;
+    text-align: center;
+    color: #FFF;
+    font-style: 30px;
+    background-color: #e7427c;
+    border-radius: 50%;
+
+    box-shadow: 0 6px 10px 0 #0000001a,0 1px 18px #0000001a,0 3px 5px -1px #0003;
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    text-decoration: none;
+    transition: transform 0.3s;
+}
+
+.calendar__button:hover{
+    text-decoration: none;
+    transform: scale(3);
+    color: #FFF;
+    background-color: #992950da;
+}
+
+.calendar__table td.is-today{
+    background-color:#e7427c49;
+}
+
+a{
+    color: #e7427c;
+}
+
+a:hover{
+    color: #e7427cc7;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #992950da;
+    border-color: #992950;
+        transform: scale(1.1);
+
+}
+
+
+
+.new__client{
+    padding: 5%;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.ajoutchien{
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
